@@ -49,7 +49,7 @@ addItem.addEventListener('click', e => {
 // Listen for new item for main process
 ipcRenderer.on('new-item-success', (e, newItem) => {
   // Add new item to 'items' node
-  items.addItem(newItem);
+  items.addItem(newItem, true);
 
   // Enable buttons
   toggleModalButtons();
