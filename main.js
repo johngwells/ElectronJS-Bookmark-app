@@ -1,6 +1,7 @@
 // Modules
 const { app, BrowserWindow, ipcMain } = require('electron');
 const windowStateKeeper = require('electron-window-state');
+const readItem = require('./readItem');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -11,8 +12,11 @@ ipcMain.on('new-item', (e, itemUrl) => {
   console.log(itemUrl);
 
   // get new item and send back to renderer
-  e.sender.send('new-item-success', 'Sent Success!')
-})
+  // pass in the url & the callback. Once readItem executes the functions it sends back the callback and readItem completes.
+  readItem(itemUrl, item => {
+    e.sender.send('new-item-success', item);
+  });
+});
 
 // Create a new BrowserWindow when `app` is ready
 function createWindow() {
