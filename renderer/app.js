@@ -10,6 +10,24 @@ let closeModal = document.getElementById('close-modal');
 let modal = document.getElementById('modal');
 let addItem = document.getElementById('add-item');
 let itemUrl = document.getElementById('url');
+let search = document.getElementById('search');
+
+// Filter items with 'search'
+search.addEventListener('keyup', e => {
+  // Loop items
+  Array.from(document.getElementsByClassName('read-item')).forEach(item => {
+    // Hide items that don't match search value
+    let hasMatch = item.innerText.toLowerCase().includes(search.value);
+    item.style.display = hasMatch ? 'flex' : 'none';
+  });
+});
+
+// Navigate item selection up/down arrows
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    items.changeSelection(e.key);
+  }
+})
 
 // disable & enable modal buttons
 const toggleModalButtons = () => {
