@@ -1,5 +1,15 @@
+const fs = require('fs');
+
 // DOM nodes
 let items = document.getElementById('items');
+
+// Get readerJS content
+let readerJS;
+
+fs.readFile(`${__dirname}/reader.js`, (err, data) => {
+  // toString as readFile returns a buffer by default
+  readerJS = data.toString();
+});
 
 // Track items in storage
 // Since we converted to a string when to parse back into an array
@@ -35,21 +45,38 @@ exports.changeSelection = direction => {
     currentItem.classList.remove('selected');
     currentItem.nextElementSibling.classList.add('selected');
   }
-}
+};
 
 // Open selected item
 exports.open = () => {
   // Only if we have items
   if (!this.storage) return;
-  
+
   // Get selected item
   let selectedItem = document.getElementsByClassName('read-item selected')[0];
 
   // Get items url
   let contentURL = selectedItem.dataset.url;
-
   console.log(contentURL)
-}
+
+  // Open item in proxy BrowserWindow
+  let readerWin = window.open(
+    contentURL,
+    '',
+    `
+    maxWidth=2000, 
+    maxHeight=2000, 
+    width=1200, 
+    height=800, 
+    backgroundColor=#DEDEDE,
+    nodeIntegration=1,
+    contextIsolation=1
+  `
+  );
+  // Injecct JS
+  console.log(readerJS)
+  readerWin.eval(readerJS);
+};
 
 // Add new item
 exports.addItem = (item, isNew = false) => {
@@ -76,7 +103,7 @@ exports.addItem = (item, isNew = false) => {
 
   // If this is the first item, select it
   if (document.getElementsByClassName('read-item').length === 1) {
-    itemNode.classList.add('selected')
+    itemNode.classList.add('selected');
   }
 
   // Add item to storage and persist
